@@ -1,9 +1,6 @@
 package bitbuilder
 
-type Pt struct {
+// A point in 2D space.
+type Point struct {
 	X, Y int
-}
-
-func Point(x, y int) Pt {
-	return Pt{x, y}
 }

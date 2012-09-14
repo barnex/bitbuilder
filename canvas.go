@@ -13,6 +13,7 @@ import (
 	"os"
 )
 
+// A Canvas is used to draw on.
 type Canvas struct {
 	*image.RGBA
 	painter     *raster.RGBAPainter
@@ -22,6 +23,7 @@ type Canvas struct {
 	path        raster.Path
 }
 
+// Make a new canvas of size w x h.
 func NewCanvas(w, h int) *Canvas {
 	c := new(Canvas)
 	c.RGBA = image.NewRGBA(image.Rect(0, 0, w, h))
@@ -35,22 +37,27 @@ func NewCanvas(w, h int) *Canvas {
 	return c
 }
 
+// Set the color for drawing.
 func (c *Canvas) SetColor(col color.Color) {
 	c.painter.SetColor(col)
 }
 
+// Line capping style.
 var (
 	Round  = raster.RoundCapper
 	Square = raster.SquareCapper
 	Butt   = raster.ButtCapper
 )
 
+// Set the line width and end capping style.
 func (c *Canvas) SetStroke(width int, cap_ raster.Capper) {
 	c.strokewidth = fix32(width)
 	c.strokecap = cap_
 }
 
-func (c *Canvas) Line(a, b Pt) {
+// Draw a line between points a and b.
+// Uses the currently set color and stroke style.
+func (c *Canvas) Line(a, b Point) {
 	c.path.Start(pt(a.X, a.Y))
 	c.path.Add1(pt(b.X, b.Y))
 	c.strokePath()
@@ -66,6 +73,7 @@ func (c *Canvas) strokePath() {
 	c.rasterizer.Rasterize(c.painter)
 }
 
+// Save the Canvas' contents to a PNG file.
 func (c *Canvas) Encode(fname string) {
 	out, err := os.OpenFile(fname, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0755)
 	check("topng", err)
