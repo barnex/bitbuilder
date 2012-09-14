@@ -81,6 +81,7 @@ func (c *Canvas) fillPath() {
 
 // Save the Canvas' contents to a PNG file.
 func (c *Canvas) Encode(fname string) {
+	// TODO: image postprocessing: make perfectly monochrome
 	out, err := os.OpenFile(fname, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0755)
 	check("topng", err)
 	defer out.Close()
