@@ -18,6 +18,7 @@ type Canvas struct {
 	painter     *raster.RGBAPainter
 	rasterizer  *raster.Rasterizer
 	strokewidth raster.Fix32
+	strokecap   raster.Capper
 	path        raster.Path
 }
 
@@ -30,7 +31,7 @@ func NewCanvas(w, h int) *Canvas {
 	c.SetColor(color.Black)
 	c.path = make(raster.Path, 0, 100)
 	c.resetPath()
-	c.SetStroke(1)
+	c.SetStroke(1, Round)
 	return c
 }
 
@@ -38,8 +39,15 @@ func (c *Canvas) SetColor(col color.Color) {
 	c.painter.SetColor(col)
 }
 
-func (c *Canvas) SetStroke(width int) {
+var (
+	Round  = raster.RoundCapper
+	Square = raster.SquareCapper
+	Butt   = raster.ButtCapper
+)
+
+func (c *Canvas) SetStroke(width int, cap_ raster.Capper) {
 	c.strokewidth = fix32(width)
+	c.strokecap = cap_
 }
 
 func (c *Canvas) Line(a, b Pt) {
@@ -54,7 +62,7 @@ func (c *Canvas) resetPath() {
 }
 
 func (c *Canvas) strokePath() {
-	raster.Stroke(c.rasterizer, c.path, c.strokewidth, nil, nil)
+	raster.Stroke(c.rasterizer, c.path, c.strokewidth, c.strokecap, nil)
 	c.rasterizer.Rasterize(c.painter)
 }
 
