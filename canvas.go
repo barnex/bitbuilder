@@ -13,15 +13,15 @@ import (
 	"os"
 )
 
-type Canvas struct{
+type Canvas struct {
 	*image.RGBA
-	painter *raster.RGBAPainter
-	rasterizer *raster.Rasterizer
+	painter     *raster.RGBAPainter
+	rasterizer  *raster.Rasterizer
 	strokewidth raster.Fix32
-	path raster.Path
+	path        raster.Path
 }
 
-func NewCanvas(w, h int) *Canvas{
+func NewCanvas(w, h int) *Canvas {
 	c := new(Canvas)
 	c.RGBA = image.NewRGBA(image.Rect(0, 0, w, h))
 	c.painter = raster.NewRGBAPainter(c.RGBA)
@@ -34,31 +34,31 @@ func NewCanvas(w, h int) *Canvas{
 	return c
 }
 
-func(c*Canvas)SetColor(col color.Color){
+func (c *Canvas) SetColor(col color.Color) {
 	c.painter.SetColor(col)
 }
 
-func(c*Canvas)SetStroke(width int){
+func (c *Canvas) SetStroke(width int) {
 	c.strokewidth = fix32(width)
 }
 
-func(c*Canvas) Line(x1, y1, x2, y2 int){
-	c.path.Start(pt(x1, y1))
-	c.path.Add1(pt(x2, y2))
+func (c *Canvas) Line(a, b Pt) {
+	c.path.Start(pt(a.X, a.Y))
+	c.path.Add1(pt(b.X, b.Y))
 	c.strokePath()
 	c.resetPath()
 }
 
-func(c*Canvas)resetPath(){
+func (c *Canvas) resetPath() {
 	c.path = c.path[:0]
 }
 
-func(c*Canvas)strokePath(){
+func (c *Canvas) strokePath() {
 	raster.Stroke(c.rasterizer, c.path, c.strokewidth, nil, nil)
 	c.rasterizer.Rasterize(c.painter)
 }
 
-func (c*Canvas)Encode(fname string) {
+func (c *Canvas) Encode(fname string) {
 	out, err := os.OpenFile(fname, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0755)
 	check("topng", err)
 	defer out.Close()
