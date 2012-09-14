@@ -29,9 +29,9 @@ func main() {
 	canvas.Line(C, C2)
 
 	// triangle at the output
-	a := C2.Add(0, w)
-	b := C2.Add(w, 0)
-	c := C2.Add(0, -w)
+	a := C2.Add2(0, w)
+	b := C2.Add2(w, 0)
+	c := C2.Add2(0, -w)
 	triangle := Poly{a, b, c}
 	canvas.Fill(triangle)
 
