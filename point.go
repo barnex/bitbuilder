@@ -31,6 +31,11 @@ func (a Point) Normalize(length float64) Point {
 	return Point{int(x), int(y)}
 }
 
+func(a Point)Length()float64{
+	x, y := float64(a.X), float64(a.Y)
+	return math.Sqrt(x*x+y*y)
+}
+
 func (a Point) Rot90() Point {
 	return Point{a.Y, -a.X}
 }
