@@ -59,8 +59,8 @@ func (c *Canvas) SetStroke(width int, cap_ raster.Capper) {
 // Draw a line between points a and b.
 // Uses the currently set color and stroke style.
 func (c *Canvas) Line(a, b Point) {
-	c.path.Start(pt(a.X, a.Y))
-	c.path.Add1(pt(b.X, b.Y))
+	c.path.Start(pt(a))
+	c.path.Add1(pt(b))
 	c.strokePath()
 	c.resetPath()
 }
@@ -71,6 +71,11 @@ func (c *Canvas) resetPath() {
 
 func (c *Canvas) strokePath() {
 	raster.Stroke(c.rasterizer, c.path, c.strokewidth, c.strokecap, nil)
+	c.rasterizer.Rasterize(c.painter)
+}
+
+func (c *Canvas) fillPath() {
+	c.rasterizer.AddPath(c.path)
 	c.rasterizer.Rasterize(c.painter)
 }
 
@@ -90,8 +95,8 @@ func check(msg string, err error) {
 	}
 }
 
-func pt(x, y int) raster.Point {
-	return raster.Point{fix32(x), fix32(y)}
+func pt(a Point) raster.Point {
+	return raster.Point{fix32(a.X), fix32(a.Y)}
 }
 
 func fix32(x int) raster.Fix32 {
