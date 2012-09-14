@@ -3,7 +3,7 @@ package main
 // Author: Arne Vansteenkiste
 
 import (
-	. "bitbuilder"
+	. "github.com/barnex/bitbuilder"
 )
 
 func main() {
