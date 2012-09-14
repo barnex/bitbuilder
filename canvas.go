@@ -29,6 +29,8 @@ func NewCanvas(w, h int) *Canvas{
 	c.rasterizer.UseNonZeroWinding = true
 	c.SetColor(color.Black)
 	c.path = make(raster.Path, 0, 100)
+	c.resetPath()
+	c.SetStroke(1)
 	return c
 }
 
@@ -41,17 +43,18 @@ func(c*Canvas)SetStroke(width int){
 }
 
 func(c*Canvas) Line(x1, y1, x2, y2 int){
-	c.resetPath()
 	c.path.Start(pt(x1, y1))
 	c.path.Add1(pt(x2, y2))
-	c.renderPath()
+	c.strokePath()
+	c.resetPath()
 }
 
 func(c*Canvas)resetPath(){
 	c.path = c.path[:0]
 }
 
-func(c*Canvas)renderPath(){
+func(c*Canvas)strokePath(){
+	raster.Stroke(c.rasterizer, c.path, c.strokewidth, nil, nil)
 	c.rasterizer.Rasterize(c.painter)
 }
 
