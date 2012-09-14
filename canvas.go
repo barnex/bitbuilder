@@ -27,6 +27,7 @@ type Canvas struct {
 func NewCanvas(w, h int) *Canvas {
 	c := new(Canvas)
 	c.RGBA = image.NewRGBA(image.Rect(0, 0, w, h))
+	c.Clear(color.White)
 	c.painter = raster.NewRGBAPainter(c.RGBA)
 	c.rasterizer = raster.NewRasterizer(w, h)
 	c.rasterizer.UseNonZeroWinding = true
@@ -95,4 +96,15 @@ func pt(x, y int) raster.Point {
 
 func fix32(x int) raster.Fix32 {
 	return raster.Fix32(x << 8)
+}
+
+// Clears the entire canvas to the specified color.
+func (c *Canvas) Clear(col color.Color) {
+	img := c.RGBA
+	bounds := img.Bounds()
+	for i := bounds.Min.X; i < bounds.Max.X; i++ {
+		for j := bounds.Min.Y; j < bounds.Max.Y; j++ {
+			img.Set(i, j, col)
+		}
+	}
 }
